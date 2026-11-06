@@ -1,0 +1,274 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday! 🎂</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #16002e, #43005c, #17002e);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    overflow-x: hidden;
+    padding: 20px;
+}
+
+canvas {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 5;
+}
+
+.container {
+    width: 100%;
+    max-width: 500px;
+    padding: 35px 22px;
+    border: 1px solid rgba(255,255,255,.2);
+    border-radius: 25px;
+    background: rgba(255,255,255,.09);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 0 40px rgba(255,0,200,.2);
+    animation: appear 1.2s ease;
+    z-index: 2;
+}
+
+@keyframes appear {
+    from {
+        opacity: 0;
+        transform: translateY(35px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.emoji {
+    font-size: 75px;
+    animation: bounce 1.5s infinite;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+}
+
+h1 {
+    font-size: clamp(32px, 8vw, 48px);
+    margin: 15px 0;
+    background: linear-gradient(90deg, #ffb6ff, #fff, #ff77c8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: glow 2s infinite alternate;
+}
+
+@keyframes glow {
+    from { filter: drop-shadow(0 0 5px #ff00cc); }
+    to { filter: drop-shadow(0 0 18px #ff00cc); }
+}
+
+.name {
+    font-size: 32px;
+    color: #ffd166;
+    margin: 15px 0;
+    font-weight: bold;
+}
+
+.message {
+    font-size: 16px;
+    line-height: 1.8;
+    color: #f5eaff;
+    margin: 20px 0;
+}
+
+button {
+    padding: 14px 28px;
+    border: none;
+    border-radius: 50px;
+    background: linear-gradient(90deg, #ff39b8, #a020f0);
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 0 20px #ff39b8;
+    transition: .3s;
+}
+
+button:hover {
+    transform: scale(1.07);
+    box-shadow: 0 0 30px #ff39b8;
+}
+
+.footer {
+    margin-top: 25px;
+    font-size: 13px;
+    color: #d8b8ed;
+}
+
+.heart {
+    position: fixed;
+    bottom: -30px;
+    font-size: 20px;
+    animation: float 6s linear infinite;
+    opacity: .6;
+    pointer-events: none;
+}
+
+@keyframes float {
+    to {
+        transform: translateY(-110vh) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+@media(max-width: 480px) {
+    .container {
+        padding: 28px 17px;
+    }
+    .emoji {
+        font-size: 65px;
+    }
+    .message {
+        font-size: 15px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="confetti"></canvas>
+
+<div class="container">
+
+    <div class="emoji">🎂</div>
+
+    <h1>Happy Birthday!</h1>
+
+    <!-- CHANGE THE NAME HERE -->
+    <div class="name">Billu 🤍</div>
+
+    <div class="message">
+        🎉 Wishing you a day filled with happiness,
+        laughter, love and unforgettable memories! 💖
+        <br><br>
+        May all your dreams come true,
+        may your smile never fade,
+        and may every moment of your life
+        be filled with endless joy. ✨
+        <br><br>
+        Keep shining, keep smiling
+        and enjoy your special day! 🥳
+    </div>
+
+    <button onclick="celebrate()">
+        🎊 MEOW!
+    </button>
+
+    <div class="footer">
+        Created by Siyam, just for you Soha🤍
+    </div>
+
+</div>
+
+<script>
+const canvas = document.getElementById("confetti");
+const ctx = canvas.getContext("2d");
+
+let pieces = [];
+
+function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+
+window.addEventListener("resize", resize);
+resize();
+
+function celebrate() {
+    pieces = [];
+
+    const colors = [
+        "#ff4d9d",
+        "#ffd166",
+        "#ffffff",
+        "#a855f7",
+        "#00e5ff",
+        "#7cff6b"
+    ];
+
+    for (let i = 0; i < 220; i++) {
+        pieces.push({
+            x: Math.random() * canvas.width,
+            y: -Math.random() * canvas.height,
+            size: Math.random() * 9 + 4,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            speed: Math.random() * 4 + 2,
+            drift: Math.random() * 3 - 1.5,
+            rotation: Math.random() * 360
+        });
+    }
+}
+
+function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    pieces.forEach((p, index) => {
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rotation * Math.PI / 180);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size);
+        ctx.restore();
+
+        p.y += p.speed;
+        p.x += p.drift;
+        p.rotation += 3;
+
+        if (p.y > canvas.height + 20) {
+            pieces.splice(index, 1);
+        }
+    });
+
+    requestAnimationFrame(animate);
+}
+
+animate();
+
+// Floating hearts
+function createHeart() {
+    const heart = document.createElement("div");
+    heart.className = "heart";
+    heart.innerHTML = "❤️";
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.animationDuration = (Math.random() * 3 + 4) + "s";
+
+    document.body.appendChild(heart);
+
+    setTimeout(() => heart.remove(), 7000);
+}
+
+setInterval(createHeart, 700);
+
+// Start celebration automatically
+window.addEventListener("load", () => {
+    celebrate();
+});
+</script>
+
+</body>
+</html>
